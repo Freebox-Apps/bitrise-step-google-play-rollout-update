@@ -93,3 +93,9 @@ inputs:
       summary: |-
         If provided, the script will force this percentage instead of calculating the next step. It must be a number between (0..1), non inclusive
       is_required: false
+  - rollout_steps: "20,40,60"
+    opts:
+      title: Rollout steps
+      summary: |-
+        Each time the step is run, it will move the rollout to the next step. Steps are integers between 1 and 100, separated by commas. 100 is not mandatory as last step. 
+      is_required: true

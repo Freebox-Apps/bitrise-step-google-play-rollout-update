@@ -11,6 +11,10 @@ def main():
   PACKAGE_NAME = sys.argv[1]
   TRACK = sys.argv[3]
   FORCE_USER_FRACTION = float(sys.argv[4] or "0")
+  STEPS = sys.argv[5].split(",")
+  for i, step in enumerate(STEPS):
+    STEPS[i] = float(step) / 100.0
+  STEPS.append(1.0)
 
   credentials = ServiceAccountCredentials.from_json_keyfile_name(
     sys.argv[2],
@@ -36,25 +40,18 @@ def main():
             if FORCE_USER_FRACTION > 0:
                 rolloutPercentage = FORCE_USER_FRACTION
                 print('Forcing rollout to', rolloutPercentage)
-            else:                
+            else:      
                 if rolloutPercentage <= 0.0001:
                     print('Release not rolled out yet')
-                    continue
-                elif rolloutPercentage < 0.02:
-                    rolloutPercentage = 0.02                         
-                elif rolloutPercentage < 0.05:
-                    rolloutPercentage = 0.05
-                elif rolloutPercentage < 0.1:
-                    rolloutPercentage = 0.1
-                elif rolloutPercentage < 0.2:
-                    rolloutPercentage = 0.2
-                elif rolloutPercentage < 0.5:
-                    rolloutPercentage = 0.5
-                elif rolloutPercentage < 1.0:
-                    rolloutPercentage = 1.0
-                else:
+                    continue  
+                elif rolloutPercentage == 1.0:
                     print('Release already fully rolled out')
-                    continue                
+                    continue
+                else:
+                    for step in STEPS:
+                        if rolloutPercentage < step:
+                            rolloutPercentage = step
+                            break 
             if rolloutPercentage < 1:
                 print('Updating rollout to', rolloutPercentage)
                 release['userFraction'] = rolloutPercentage
