@@ -85,7 +85,7 @@ inputs:
     opts:
       title: Track name
       summary: |-
-        Track name of the release.
+        Track name of the release. Prod: "production", open testing: "beta", internal testing: "qa"
       is_required: true
   - force_rollout:
     opts:
@@ -99,3 +99,19 @@ inputs:
       summary: |-
         Each time the step is run, it will move the rollout to the next step. Steps are integers between 1 and 100, separated by commas. 100 is not mandatory as last step. 
       is_required: true
+  - max_crash_rate: "1.0"
+    opts:
+      title: Max crash rate
+      summary: |-
+        Check for max crash rate before moving the rollout.
+      is_required: true
+
+outputs:
+  - ROLLOUT_RESULT: ""
+    opts:
+      title: "Check result"
+      description: "none: no need to update rollout, updated: rollout percentage has been updated, critical_crash: rollout has not been updated due to high crash rate"
+  - ROLLOUT_PERCENT: ""
+    opts:
+      title: "Rollout percentage"
+      description: "The current rollout percentage after update"
