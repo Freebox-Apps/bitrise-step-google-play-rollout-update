@@ -74,13 +74,14 @@ def main():
         crash_rate_data = crash_service.vitals().crashrate().query(name="apps/" + PACKAGE_NAME + "/crashRateMetricSet", body=body).execute()
         print("Crash rate info: ", crash_rate_data)
         
-        crash_rate = MAX_CRASH_RATE
+        crash_rate = 0
         
-        metrics = crash_rate_data['rows'][0]['metrics']
-        for metric in metrics:
-            metric_key = metric['metric']
-            if metric_key == 'userPerceivedCrashRate7dUserWeighted':
-                crash_rate = float(metric['decimalValue']['value'])
+        if 'rows' in crash_rate_data and len(crash_rate_data['rows'] > 0):
+            metrics = crash_rate_data['rows'][0]['metrics']
+            for metric in metrics:
+                metric_key = metric['metric']
+                if metric_key == 'userPerceivedCrashRate7dUserWeighted':
+                    crash_rate = float(metric['decimalValue']['value'])
         
         CRASH_RATE = str(crash_rate)
         
