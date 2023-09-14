@@ -21,6 +21,8 @@ def main():
   # outputs
   ROLLOUT_RESULT = "none"
   ROLLOUT_PERCENT = 0.0
+  CRASH_RATE = 0.0
+  USERS = 0
 
   credentials = ServiceAccountCredentials.from_json_keyfile_name(
     sys.argv[2],
@@ -108,7 +110,9 @@ def main():
                 ROLLOUT_RESULT = 'updated'
             else:
                 ROLLOUT_RESULT = 'critical_crash'
-                    
+            
+            CRASH_RATE = crash_rate
+            USERS = distinct_users
             ROLLOUT_PERCENT = rolloutPercentage          
 
     if old_result != track_result:
@@ -130,7 +134,10 @@ def main():
         else:
             print('✅ No rollout update needed')
     
-    os.system('envman add --key MY_BUILD_NUMBER --value "${BITRISE_BUILD_NUMBER}"')
+    os.system('envman add --key ROLLOUT_RESULT --value "${ROLLOUT_RESULT}"')
+    os.system('envman add --key ROLLOUT_PERCENT --value "${ROLLOUT_PERCENT}"')
+    os.system('envman add --key USERS --value "${USERS}"')
+    os.system('envman add --key CRASH_RATE --value "${CRASH_RATE}"')
 
   except AccessTokenRefreshError:
       raise SystemExit('The credentials have been revoked or expired, please re-run the application to re-authorize')
