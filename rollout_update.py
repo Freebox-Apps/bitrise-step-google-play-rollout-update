@@ -116,7 +116,9 @@ def main():
             
             ROLLOUT_PERCENT = str(rolloutPercentage)
             break
-    
+        elif crash_rate < MAX_CRASH_RATE:
+            ROLLOUT_RESULT = 'critical_crash'
+            break
 
     if old_result != track_result:
         completed_releases = list(filter(lambda release: release['status'] == "completed", track_result['releases']))
