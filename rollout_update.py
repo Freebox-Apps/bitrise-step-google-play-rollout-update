@@ -114,7 +114,7 @@ def main():
             else:
                 ROLLOUT_RESULT = 'critical_crash'
             
-            ROLLOUT_PERCENT = str(rolloutPercentage)
+            ROLLOUT_PERCENT = str(rolloutPercentage * 100.0)
             break
 
     if old_result != track_result:
