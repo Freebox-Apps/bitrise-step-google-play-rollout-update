@@ -142,11 +142,11 @@ def main():
     print('> CRASH_RATE=' + str(CRASH_RATE))
     print('> VERSION_NAME=' + str(VERSION_NAME))  
     print('> VERSION_CODE=' + str(VERSION_CODE))
-    os.system('envman add --key ROLLOUT_RESULT --value "${ROLLOUT_RESULT}"')
-    os.system('envman add --key ROLLOUT_PERCENT --value "${ROLLOUT_PERCENT}"')
-    os.system('envman add --key CRASH_RATE --value "${CRASH_RATE}"')
-    os.system('envman add --key VERSION_NAME --value "${VERSION_NAME}"')
-    os.system('envman add --key VERSION_CODE --value "${VERSION_CODE}"')
+    os.system('envman add --key ROLLOUT_RESULT --value "${' + ROLLOUT_RESULT + '}"')
+    os.system('envman add --key ROLLOUT_PERCENT --value "${' + ROLLOUT_PERCENT + '}"')
+    os.system('envman add --key CRASH_RATE --value "${' + CRASH_RATE + '}"')
+    os.system('envman add --key VERSION_NAME --value "${' + VERSION_NAME + '}"')
+    os.system('envman add --key VERSION_CODE --value "${' + VERSION_CODE + '}"')
 
   except AccessTokenRefreshError:
       raise SystemExit('The credentials have been revoked or expired, please re-run the application to re-authorize')
