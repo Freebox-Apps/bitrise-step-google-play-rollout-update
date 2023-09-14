@@ -115,10 +115,6 @@ outputs:
     opts:
       title: "Rollout percentage"
       description: "The current rollout percentage after update"
-  - USERS: ""
-    opts:
-      title: "Unique users"
-      description: "Unique user count affected by this release"
   - CRASH_RATE: ""
     opts:
       title: "Crash rate"

@@ -20,9 +20,8 @@ def main():
   
   # outputs
   ROLLOUT_RESULT = "none"
-  ROLLOUT_PERCENT = 0.0
-  CRASH_RATE = 0.0
-  USERS = 0
+  ROLLOUT_PERCENT = ""
+  CRASH_RATE = ""
 
   credentials = ServiceAccountCredentials.from_json_keyfile_name(
     sys.argv[2],
@@ -62,7 +61,7 @@ def main():
         body = {
             "dimensions": ["versionCode"],
             "filter": version_filter,
-            "metrics": ["userPerceivedCrashRate", "distinctUsers"],
+            "metrics": ["userPerceivedCrashRate7dUserWeighted"],
             "timelineSpec": {"aggregationPeriod": "DAILY",
                 "endTime": endTime,
                 "startTime": startTime
@@ -72,16 +71,15 @@ def main():
         print("Crash rate info: ", crash_rate_data)
         
         crash_rate = MAX_CRASH_RATE
-        distinct_users = 0
         
         metrics = crash_rate_data['rows'][0]['metrics']
         for metric in metrics:
             metric_key = metric['metric']
-            if metric_key == 'userPerceivedCrashRate':
+            if metric_key == 'userPerceivedCrashRate7dUserWeighted':
                 crash_rate = float(metric['decimalValue']['value'])
-            elif metric_key == 'distinctUsers':
-                distinct_users = int(metric['decimalValue']['value'])
-           
+        
+        CRASH_RATE = str(crash_rate)
+        
         if 'userFraction' in release:
             rolloutPercentage = release['userFraction']
             if crash_rate < MAX_CRASH_RATE:
@@ -111,9 +109,8 @@ def main():
             else:
                 ROLLOUT_RESULT = 'critical_crash'
             
-            CRASH_RATE = crash_rate
-            USERS = distinct_users
-            ROLLOUT_PERCENT = rolloutPercentage          
+            ROLLOUT_PERCENT = str(rolloutPercentage)
+    
 
     if old_result != track_result:
         completed_releases = list(filter(lambda release: release['status'] == "completed", track_result['releases']))
@@ -134,9 +131,11 @@ def main():
         else:
             print('✅ No rollout update needed')
     
+    print('> ROLLOUT_RESULT=' + ROLLOUT_RESULT)
+    print('> ROLLOUT_PERCENT=' + str(ROLLOUT_PERCENT))
+    print('> CRASH_RATE=' + str(CRASH_RATE))
     os.system('envman add --key ROLLOUT_RESULT --value "${ROLLOUT_RESULT}"')
     os.system('envman add --key ROLLOUT_PERCENT --value "${ROLLOUT_PERCENT}"')
-    os.system('envman add --key USERS --value "${USERS}"')
     os.system('envman add --key CRASH_RATE --value "${CRASH_RATE}"')
 
   except AccessTokenRefreshError:
