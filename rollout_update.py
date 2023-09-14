@@ -22,6 +22,8 @@ def main():
   ROLLOUT_RESULT = "none"
   ROLLOUT_PERCENT = ""
   CRASH_RATE = ""
+  VERSION_NAME = ""
+  VERSION_CODE = ""
 
   credentials = ServiceAccountCredentials.from_json_keyfile_name(
     sys.argv[2],
@@ -44,6 +46,8 @@ def main():
     print("Current status: ", track_result)
     for release in track_result['releases']:
         version_filter = "versionCode=" + release['versionCodes'][0]
+        VERSION_CODE = release['versionCodes'][0]
+        VERSION_NAME = release['name']
   
         crash_info = crash_service.vitals().crashrate().get(name="apps/" + PACKAGE_NAME + "/crashRateMetricSet").execute()
         
@@ -110,6 +114,7 @@ def main():
                 ROLLOUT_RESULT = 'critical_crash'
             
             ROLLOUT_PERCENT = str(rolloutPercentage)
+            break
     
 
     if old_result != track_result:
@@ -134,9 +139,13 @@ def main():
     print('> ROLLOUT_RESULT=' + ROLLOUT_RESULT)
     print('> ROLLOUT_PERCENT=' + str(ROLLOUT_PERCENT))
     print('> CRASH_RATE=' + str(CRASH_RATE))
+    print('> VERSION_NAME=' + str(VERSION_NAME))  
+    print('> VERSION_CODE=' + str(VERSION_CODE))
     os.system('envman add --key ROLLOUT_RESULT --value "${ROLLOUT_RESULT}"')
     os.system('envman add --key ROLLOUT_PERCENT --value "${ROLLOUT_PERCENT}"')
     os.system('envman add --key CRASH_RATE --value "${CRASH_RATE}"')
+    os.system('envman add --key VERSION_NAME --value "${VERSION_NAME}"')
+    os.system('envman add --key VERSION_CODE --value "${VERSION_CODE}"')
 
   except AccessTokenRefreshError:
       raise SystemExit('The credentials have been revoked or expired, please re-run the application to re-authorize')

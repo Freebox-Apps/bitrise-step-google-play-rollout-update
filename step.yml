@@ -119,3 +119,11 @@ outputs:
     opts:
       title: "Crash rate"
       description: "Current user perceptible crash rate in this release"
+  - VERSION_NAME: ""
+    opts:
+      title: "Version name"
+      description: "Version name of this release"
+  - VERSION_CODE: ""
+    opts:
+      title: "Version Code"
+      description: "Version code of this release"
