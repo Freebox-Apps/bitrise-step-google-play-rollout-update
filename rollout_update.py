@@ -76,7 +76,7 @@ def main():
         
         crash_rate = 0
         
-        if 'rows' in crash_rate_data and len(crash_rate_data['rows'] > 0):
+        if 'rows' in crash_rate_data and len(crash_rate_data['rows']) > 0:
             metrics = crash_rate_data['rows'][0]['metrics']
             for metric in metrics:
                 metric_key = metric['metric']
