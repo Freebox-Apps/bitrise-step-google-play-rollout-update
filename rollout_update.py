@@ -65,7 +65,7 @@ def main():
         body = {
             "dimensions": ["versionCode"],
             "filter": version_filter,
-            "metrics": ["userPerceivedCrashRate7dUserWeighted"],
+            "metrics": ["crashRate"],
             "timelineSpec": {"aggregationPeriod": "DAILY",
                 "endTime": endTime,
                 "startTime": startTime
