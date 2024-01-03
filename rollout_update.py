@@ -17,7 +17,7 @@ def main():
     STEPS[i] = float(step) / 100.0
   STEPS.append(1.0)
   MAX_CRASH_RATE = float(sys.argv[6] or "0.1")
-  
+
   # outputs
   ROLLOUT_RESULT = "none"
   ROLLOUT_PERCENT = ""
@@ -34,7 +34,7 @@ def main():
 
   service = build('androidpublisher', 'v3', http=http)
   crash_service = build("playdeveloperreporting", "v1beta1", http=http, cache_discovery=False)
-  
+
   try:
     edit_request = service.edits().insert(body={}, packageName=PACKAGE_NAME)
     result = edit_request.execute()
@@ -48,43 +48,43 @@ def main():
         version_filter = "versionCode=" + release['versionCodes'][0]
         VERSION_CODE = release['versionCodes'][0]
         VERSION_NAME = release['name']
-  
+
         crash_info = crash_service.vitals().crashrate().get(name="apps/" + PACKAGE_NAME + "/crashRateMetricSet").execute()
-        
+
         print("Crash api info: ",crash_info)
-        
+
         endTime = {}
-        
+
         for freshness in crash_info['freshnessInfo']['freshnesses']:
             if freshness['aggregationPeriod'] == "DAILY":
                 endTime = freshness['latestEndTime']
-                
+
         startTime = copy.deepcopy(endTime)
         startTime['day'] = startTime['day'] - 1
-          
+
         body = {
             "dimensions": ["versionCode"],
             "filter": version_filter,
-            "metrics": ["userPerceivedCrashRate7dUserWeighted"],
+            "metrics": ["userPerceivedCrashRate", "userPerceivedCrashRate7dUserWeighted", "crashRate", "crashRate7dUserWeighted", "distinctUsers"],
             "timelineSpec": {"aggregationPeriod": "DAILY",
                 "endTime": endTime,
                 "startTime": startTime
             }}
-  
+
         crash_rate_data = crash_service.vitals().crashrate().query(name="apps/" + PACKAGE_NAME + "/crashRateMetricSet", body=body).execute()
         print("Crash rate info: ", crash_rate_data)
-        
+
         crash_rate = 0
-        
+
         if 'rows' in crash_rate_data and len(crash_rate_data['rows']) > 0:
             metrics = crash_rate_data['rows'][0]['metrics']
             for metric in metrics:
                 metric_key = metric['metric']
-                if metric_key == 'userPerceivedCrashRate7dUserWeighted':
+                if metric_key == 'userPerceivedCrashRate':
                     crash_rate = float(metric['decimalValue']['value'])
-        
+
         CRASH_RATE = str(crash_rate)
-        
+
         if 'userFraction' in release:
             rolloutPercentage = release['userFraction']
             if crash_rate < MAX_CRASH_RATE:
@@ -113,7 +113,7 @@ def main():
                 ROLLOUT_RESULT = 'updated'
             else:
                 ROLLOUT_RESULT = 'critical_crash'
-            
+
             ROLLOUT_PERCENT = str(rolloutPercentage * 100.0)
             break
 
@@ -136,7 +136,7 @@ def main():
             ROLLOUT_RESULT = 'critical_crash'
         else:
             print('✅ No rollout update needed')
-    
+
     print('> ROLLOUT_RESULT=' + ROLLOUT_RESULT)
     print('> ROLLOUT_PERCENT=' + str(ROLLOUT_PERCENT))
     print('> CRASH_RATE=' + str(CRASH_RATE))
