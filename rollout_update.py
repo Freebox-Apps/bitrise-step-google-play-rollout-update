@@ -45,6 +45,7 @@ def main():
 
     print("Current status: ", track_result)
     for release in track_result['releases']:
+      if release['status'] == 'inProgress':
         version_filter = "versionCode=" + release['versionCodes'][0]
         VERSION_CODE = release['versionCodes'][0]
         VERSION_NAME = release['name']
