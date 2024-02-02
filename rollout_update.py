@@ -59,8 +59,13 @@ def main():
             if freshness['aggregationPeriod'] == "DAILY":
                 endTime = freshness['latestEndTime']
 
+        endDate = datetime.datetime(endTime['year'], endTime['month'], endTime['day'])
+        startDate = endDate - timedelta(days = 1)
+          
         startTime = copy.deepcopy(endTime)
-        startTime['day'] = startTime['day'] - 1
+        startTime['day'] = startDate.day
+        startTime['month'] = startDate.month
+        startTime['year'] = startDate.year
 
         body = {
             "dimensions": ["versionCode"],
