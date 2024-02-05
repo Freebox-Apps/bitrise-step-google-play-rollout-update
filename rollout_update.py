@@ -34,6 +34,7 @@ def main():
 
   service = build('androidpublisher', 'v3', http=http)
   crash_service = build("playdeveloperreporting", "v1beta1", http=http, cache_discovery=False)
+  crash_rate = 0
 
   try:
     edit_request = service.edits().insert(body={}, packageName=PACKAGE_NAME)
@@ -79,8 +80,6 @@ def main():
 
         crash_rate_data = crash_service.vitals().crashrate().query(name="apps/" + PACKAGE_NAME + "/crashRateMetricSet", body=body).execute()
         print("Crash rate info: ", crash_rate_data)
-
-        crash_rate = 0
 
         if 'rows' in crash_rate_data and len(crash_rate_data['rows']) > 0:
             metrics = crash_rate_data['rows'][0]['metrics']
