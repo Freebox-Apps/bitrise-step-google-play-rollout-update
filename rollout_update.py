@@ -7,6 +7,7 @@ import datetime
 from apiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
 from oauth2client.client import AccessTokenRefreshError
+from datetime import timedelta
 
 # To run: rollout_update package_name json_credentials_path track force_user_fraction
 def main():
