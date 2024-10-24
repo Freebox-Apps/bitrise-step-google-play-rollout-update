@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -x
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -11,6 +12,8 @@ else
     echo "Using local content credentials"
     echo "$service_account_json_key_content" > "${SCRIPT_DIR}/credentials.json"
 fi
+
+echo "installing deps"
 
 pipenv install urllib3
 pipenv install google-api-python-client
