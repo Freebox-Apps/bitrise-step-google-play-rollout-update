@@ -12,10 +12,13 @@ else
     echo "$service_account_json_key_content" > "${SCRIPT_DIR}/credentials.json"
 fi
 
-pipenv install google-api-python-client
-pipenv install oauth2client
+pip3 install virtualenv
+virtualenv rollout
+source rollout/bin/activate
+rollout/bin/pip install google-api-python-client
+rollout/bin/pip install oauth2client
 
 echo "Running: ${SCRIPT_DIR}/rollout_update.py ${package_name} ${SCRIPT_DIR}/credentials.json ${track} ${force_rollout} ${rollout_steps} ${max_crash_rate}"
-pipenv run python "${SCRIPT_DIR}/rollout_update.py" "${package_name}" "${SCRIPT_DIR}/credentials.json" "${track}" "${force_rollout}" "${rollout_steps}" "${max_crash_rate}"
+rollout/bin/python "${SCRIPT_DIR}/rollout_update.py" "${package_name}" "${SCRIPT_DIR}/credentials.json" "${track}" "${force_rollout}" "${rollout_steps}" "${max_crash_rate}"
 
 rm "${SCRIPT_DIR}/credentials.json"
