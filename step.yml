@@ -50,9 +50,11 @@ run_if: ""
 deps:
   brew:
   - name: pip3
+  - name: virtualenv
   - name: wget
   apt_get:
   - name: pip3
+  - name: virtualenv
   - name: wget
   
 toolkit:
