@@ -15,6 +15,7 @@ fi
 
 echo "installing deps"
 
+pip install urllib3
 pipenv install urllib3
 pipenv install google-api-python-client
 pipenv install oauth2client
