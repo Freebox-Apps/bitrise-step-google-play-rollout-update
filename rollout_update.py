@@ -99,9 +99,9 @@ def main():
                     rolloutPercentage = FORCE_USER_FRACTION
                     print('Forcing rollout to', rolloutPercentage)
                 else:      
-                    if rolloutPercentage <= 0.0001:
+                    if rolloutPercentage <= 0.01:
                         print('Release not rolled out yet')
-                        continue  
+                        continue
                     elif rolloutPercentage == 1.0:
                         print('Release already fully rolled out')
                         continue
